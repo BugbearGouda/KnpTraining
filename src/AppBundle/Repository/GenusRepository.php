@@ -3,7 +3,7 @@ namespace AppBundle\Repository;
 
 use AppBundle\Entity\Genus;
 use Doctrine\ORM\EntityRepository;
-asdasdasas
+
 class GenusRepository extends EntityRepository
 {
     /**
