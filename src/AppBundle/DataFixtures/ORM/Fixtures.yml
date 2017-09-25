@@ -22,5 +22,5 @@ AppBundle\Entity\SubFamily:
 
 AppBundle\Entity\User:
     user_{1..10}:
-        # use some fake data for this
         email: weaverryan+<current()>@gmail.com
+        roles: ['ROLE_ADMIN']
