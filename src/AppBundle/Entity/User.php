@@ -1,13 +1,16 @@
 <?php
 namespace AppBundle\Entity;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity
  * @ORM\Table(name="user")
+ * @UniqueEntity(fields={"email"}, message="It looks like your already have an account!")
  */
 class User implements UserInterface
 {
@@ -19,6 +22,8 @@ class User implements UserInterface
     private $id;
 
     /**
+     * @Assert\NotBlank()
+     * @Assert\Email()
      * @ORM\Column(type="string", unique=true)
      */
     private $email;
@@ -32,11 +37,18 @@ class User implements UserInterface
 
     /**
      * A non-persisted field that's used to create the encoded password.
+     * @Assert\NotBlank(groups={"Registration"})
      *
      * @var string
      */
     private $plainPassword;
 
+    /**
+     * @ORM\Column(type="json_array")
+     */
+    private $roles = [];
+
+    // needed by the security system
     public function getUsername()
     {
         return $this->email;
@@ -44,7 +56,17 @@ class User implements UserInterface
 
     public function getRoles()
     {
-        return ['ROLE_USER'];
+        $roles = $this->roles;
+        // give everyone ROLE_USER!
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+        return $roles;
+    }
+
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
     }
 
     public function getPassword()
@@ -54,6 +76,7 @@ class User implements UserInterface
 
     public function getSalt()
     {
+        // leaving blank - I don't need/have a password!
     }
 
     public function eraseCredentials()
@@ -61,17 +84,16 @@ class User implements UserInterface
         $this->plainPassword = null;
     }
 
-    /**
-     * @param mixed $email
-     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
     public function setEmail($email)
     {
         $this->email = $email;
     }
 
-    /**
-     * @param mixed $password
-     */
     public function setPassword($password)
     {
         $this->password = $password;
