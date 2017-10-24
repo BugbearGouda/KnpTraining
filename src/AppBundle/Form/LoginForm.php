@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -12,6 +13,7 @@ class LoginForm extends AbstractType
     {
         $builder
             ->add('_username')
-            ->add('_password', PasswordType::class);
+            ->add('_password', PasswordType::class)
+        ;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -65,9 +66,6 @@ class Genus
         $this->notes = new ArrayCollection();
     }
 
-    /**
-     * @return mixed
-     */
     public function getId()
     {
         return $this->id;
@@ -118,20 +116,17 @@ class Genus
 
     public function getUpdatedAt()
     {
-        return new \DateTime('-' . rand(0, 100) . ' days');
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsPublished()
-    {
-        return $this->isPublished;
+        return new \DateTime('-'.rand(0, 100).' days');
     }
 
     public function setIsPublished($isPublished)
     {
         $this->isPublished = $isPublished;
+    }
+
+    public function getIsPublished()
+    {
+        return $this->isPublished;
     }
 
     /**

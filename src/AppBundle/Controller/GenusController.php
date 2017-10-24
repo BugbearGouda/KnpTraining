@@ -1,14 +1,15 @@
 <?php
+
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Genus;
 use AppBundle\Entity\GenusNote;
 use AppBundle\Service\MarkdownTransformer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class GenusController extends Controller
 {
@@ -43,7 +44,7 @@ class GenusController extends Controller
     public function listAction()
     {
         $em = $this->getDoctrine()->getManager();
-        dump($em->getRepository('AppBundle:Genus'));
+
         $genuses = $em->getRepository('AppBundle:Genus')
             ->findAllPublishedOrderedByRecentlyActive();
 
@@ -55,9 +56,10 @@ class GenusController extends Controller
     /**
      * @Route("/genus/{genusName}", name="genus_show")
      */
-    public function showAction($genusName, MarkdownTransformer $markdownTransformer)
+    public function showAction($genusName)
     {
         $em = $this->getDoctrine()->getManager();
+
         $genus = $em->getRepository('AppBundle:Genus')
             ->findOneBy(['name' => $genusName]);
 
@@ -65,20 +67,20 @@ class GenusController extends Controller
             throw $this->createNotFoundException('genus not found');
         }
 
+        $markdownTransformer = $this->get('app.markdown_transformer');
         $funFact = $markdownTransformer->parse($genus->getFunFact());
-
-
-        $recentNotes = $em->getRepository('AppBundle:GenusNote')
-            ->findAllRecentNotesForGenus($genus);
 
         $this->get('logger')
             ->info('Showing genus: '.$genusName);
 
-        return $this->render('genus/show.html.twig', [
+        $recentNotes = $em->getRepository('AppBundle:GenusNote')
+            ->findAllRecentNotesForGenus($genus);
+
+        return $this->render('genus/show.html.twig', array(
             'genus' => $genus,
             'funFact' => $funFact,
             'recentNoteCount' => count($recentNotes)
-        ]);
+        ));
     }
 
     /**
@@ -88,6 +90,7 @@ class GenusController extends Controller
     public function getNotesAction(Genus $genus)
     {
         $notes = [];
+
         foreach ($genus->getNotes() as $note) {
             $notes[] = [
                 'id' => $note->getId(),

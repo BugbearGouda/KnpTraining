@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Form;
 
 use AppBundle\Entity\SubFamily;
@@ -19,7 +20,7 @@ class GenusFormType extends AbstractType
             ->add('subFamily', EntityType::class, [
                 'placeholder' => 'Choose a Sub Family',
                 'class' => SubFamily::class,
-                'query_builder' => function (SubFamilyRepository $repo) {
+                'query_builder' => function(SubFamilyRepository $repo) {
                     return $repo->createAlphabeticalQueryBuilder();
                 }
             ])
@@ -34,8 +35,9 @@ class GenusFormType extends AbstractType
             ->add('firstDiscoveredAt', DateType::class, [
                 'widget' => 'single_text',
                 'attr' => ['class' => 'js-datepicker'],
-                'html5' => false
-            ]);
+                'html5' => false,
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
