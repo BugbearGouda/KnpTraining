@@ -1,5 +1,4 @@
 <?php
-
 namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\Entity\Genus;
@@ -38,9 +37,8 @@ class LoadFixtures implements FixtureInterface
             'Trichechus',
             'Eumetopias'
         ];
-
         $key = array_rand($genera);
-
         return $genera[$key];
     }
+
 }
