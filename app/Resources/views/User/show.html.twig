@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
     <div class="container">
         <div class="row">
@@ -10,14 +9,12 @@
                     {% else %}
                         {{ user.email }}
                     {% endif %}
-
                     <a href="{{ path('user_edit', {
                         id: user.id
                     }) }}" class="pull-right btn btn-link">
                         <span class="fa fa-pencil"></span>
                     </a>
                 </h1>
-
                 <table class="table">
                     <tbody>
                     <tr>
@@ -35,16 +32,15 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="col-xs-4">
                 <h3>Genus Studied</h3>
                 <ul class="list-group">
-                    {% for genusStudied in user.studiedGenuses %}
+                    {% for genusScientist in user.studiedGenuses %}
                         <li class="list-group-item">
                             <a href="{{ path('genus_show', {
-                                'slug': genusStudied.slug
+                                'slug': genusScientist.genus.slug
                             }) }}">
-                                {{ genusStudied.name }}
+                                {{ genusScientist.genus.name }}
                             </a>
                         </li>
                     {% endfor %}

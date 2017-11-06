@@ -1,12 +1,10 @@
 <?php
-
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
-
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\GenusRepository")
@@ -70,8 +68,14 @@ class Genus
     private $notes;
 
     /**
-     * @ORM\ManyToMany(targetEntity="User", inversedBy="studiedGenuses")
-     * @ORM\JoinTable(name="genus_scientist")
+     * @ORM\OneToMany(
+     *     targetEntity="GenusScientist",
+     *     mappedBy="genus",
+     *     fetch="EXTRA_LAZY",
+     *     orphanRemoval=true,
+     *     cascade={"persist"}
+     * )
+     * @Assert\Valid()
      */
     private $genusScientists;
 
@@ -131,7 +135,7 @@ class Genus
 
     public function getUpdatedAt()
     {
-        return new \DateTime('-'.rand(0, 100).' days');
+        return new \DateTime('-' . rand(0, 100) . ' days');
     }
 
     public function setIsPublished($isPublished)
@@ -172,22 +176,28 @@ class Genus
         $this->slug = $slug;
     }
 
-    public function addGenusScientist(User $user)
+    public function addGenusScientist(GenusScientist $genusScientist)
     {
-        if ($this->genusScientists->contains($user)) {
+        if ($this->genusScientists->contains($genusScientist)) {
             return;
         }
-
-        $this->genusScientists[] = $user;
+        $this->genusScientists[] = $genusScientist;
+        // needed to update the owning side of the relationship!
+        $genusScientist->setGenus($this);
     }
 
-    public function removeGenusScientist(User $user)
+    public function removeGenusScientist(GenusScientist $genusScientist)
     {
-        $this->genusScientists->removeElement($user);
+        if (!$this->genusScientists->contains($genusScientist)) {
+            return;
+        }
+        $this->genusScientists->removeElement($genusScientist);
+        // needed to update the owning side of the relationship!
+        $genusScientist->setGenus(null);
     }
 
     /**
-     * @return ArrayCollection|User[]
+     * @return ArrayCollection|GenusScientist[]
      */
     public function getGenusScientists()
     {

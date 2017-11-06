@@ -1,14 +1,11 @@
 <?php
-
 namespace AppBundle\Controller;
-
 use AppBundle\Entity\User;
 use AppBundle\Form\UserEditForm;
 use AppBundle\Form\UserRegistrationForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-
 class UserController extends Controller
 {
     /**
@@ -17,7 +14,6 @@ class UserController extends Controller
     public function registerAction(Request $request)
     {
         $form = $this->createForm(UserRegistrationForm::class);
-
         $form->handleRequest($request);
         if ($form->isValid()) {
             /** @var User $user */
@@ -25,9 +21,7 @@ class UserController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-
             $this->addFlash('success', 'Welcome '.$user->getEmail());
-
             return $this->get('security.authentication.guard_handler')
                 ->authenticateUserAndHandleSuccess(
                     $user,
@@ -36,12 +30,10 @@ class UserController extends Controller
                     'main'
                 );
         }
-
         return $this->render('user/register.html.twig', [
             'form' => $form->createView()
         ]);
     }
-
     /**
      * @Route("/users/{id}", name="user_show")
      */
@@ -51,30 +43,24 @@ class UserController extends Controller
             'user' => $user
         ));
     }
-
     /**
      * @Route("/users/{id}/edit", name="user_edit")
      */
     public function editAction(User $user, Request $request)
     {
         $form = $this->createForm(UserEditForm::class, $user);
-
         $form->handleRequest($request);
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-
             $this->addFlash('success', 'User Updated!');
-
             return $this->redirectToRoute('user_edit', [
                 'id' => $user->getId()
             ]);
         }
-
         return $this->render('user/edit.html.twig', [
             'userForm' => $form->createView()
         ]);
-
     }
 }

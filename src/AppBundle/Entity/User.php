@@ -1,5 +1,4 @@
 <?php
-
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -76,8 +75,7 @@ class User implements UserInterface
     private $universityName;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Genus", mappedBy="genusScientists")
-     * @ORM\OrderBy({"name" = "ASC"})
+     * @ORM\OneToMany(targetEntity="GenusScientist", mappedBy="user")
      */
     private $studiedGenuses;
 
@@ -85,7 +83,6 @@ class User implements UserInterface
     {
         $this->studiedGenuses = new ArrayCollection();
     }
-
 
     public function getId()
     {
@@ -101,12 +98,10 @@ class User implements UserInterface
     public function getRoles()
     {
         $roles = $this->roles;
-
         // give everyone ROLE_USER!
         if (!in_array('ROLE_USER', $roles)) {
             $roles[] = 'ROLE_USER';
         }
-
         return $roles;
     }
 
@@ -210,11 +205,11 @@ class User implements UserInterface
 
     public function getFullName()
     {
-        return trim($this->getFirstName().' '.$this->getLastName());
+        return trim($this->getFirstName() . ' ' . $this->getLastName());
     }
 
     /**
-     * @return ArrayCollection|Genus[]
+     * @return ArrayCollection|GenusScientist[]
      */
     public function getStudiedGenuses()
     {
