@@ -79,6 +79,17 @@ class User implements UserInterface
      */
     private $studiedGenuses;
 
+    /**
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
+     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="last_updated_by_id", referencedColumnName="id", nullable=true)
+     */
+    private $lastUpdatedBy;
+
     public function __construct()
     {
         $this->studiedGenuses = new ArrayCollection();
@@ -208,11 +219,57 @@ class User implements UserInterface
         return trim($this->getFirstName() . ' ' . $this->getLastName());
     }
 
+    public function setFullName($fullName)
+    {
+        $names = explode(' ', $fullName);
+        $firstName = array_shift($names);
+        $lastName = implode(' ', $names);
+        $this->setFirstName($firstName);
+        $this->setLastName($lastName);
+    }
+
     /**
      * @return ArrayCollection|GenusScientist[]
      */
     public function getStudiedGenuses()
     {
         return $this->studiedGenuses;
+    }
+
+    public function __toString()
+    {
+        return (string)$this->getFullName() ? $this->getFullName() : $this->getEmail();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param mixed $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastUpdatedBy()
+    {
+        return $this->lastUpdatedBy;
+    }
+
+    /**
+     * @param mixed $lastUpdatedBy
+     */
+    public function setLastUpdatedBy($lastUpdatedBy)
+    {
+        $this->lastUpdatedBy = $lastUpdatedBy;
     }
 }

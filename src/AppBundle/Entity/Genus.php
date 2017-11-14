@@ -3,6 +3,7 @@ namespace AppBundle\Entity;
 
 use AppBundle\Repository\GenusRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -102,9 +103,6 @@ class Genus
         $this->name = $name;
     }
 
-    /**
-     * @return SubFamily
-     */
     public function getSubFamily()
     {
         return $this->subFamily;
@@ -133,6 +131,7 @@ class Genus
     public function setFunFact($funFact)
     {
         $this->funFact = $funFact;
+        return;
     }
 
     public function getUpdatedAt()
@@ -151,7 +150,7 @@ class Genus
     }
 
     /**
-     * @return ArrayCollection|GenusNote[]
+     * @return Collection|GenusNote[]
      */
     public function getNotes()
     {
@@ -199,7 +198,7 @@ class Genus
     }
 
     /**
-     * @return ArrayCollection|GenusScientist[]
+     * @return Collection|GenusScientist[]
      */
     public function getGenusScientists()
     {
@@ -214,5 +213,22 @@ class Genus
         return $this->getGenusScientists()->matching(
             GenusRepository::createExpertCriteria()
         );
+    }
+
+    public function feed($food)
+    {
+        $foodItems = [];
+        foreach ($food as $foodItem) {
+            $foodItems[] = $foodItem;
+        }
+        if (count($foodItems) === 0) {
+            return sprintf('%s is looking at you in a funny way', $this->getName());
+        }
+        return sprintf('%s recently ate: %s', $this->getName(), implode(', ', $foodItems));
+    }
+
+    public function __toString()
+    {
+        return (string)$this->getName();
     }
 }

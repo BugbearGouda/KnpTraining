@@ -9,6 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class GenusNote
 {
+    const AVATAR_FILE_PREFIX = '/images/';
+    const BLANK_AVATAR_FILENAME = 'blank.jpg';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -42,91 +45,72 @@ class GenusNote
      */
     private $genus;
 
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getUsername()
     {
         return $this->username;
     }
 
-    /**
-     * @param mixed $username
-     */
     public function setUsername($username)
     {
         $this->username = $username;
     }
 
-    /**
-     * @return mixed
-     */
     public function getUserAvatarFilename()
     {
         return $this->userAvatarFilename;
     }
 
-    /**
-     * @param mixed $userAvatarFilename
-     */
+    public function getUserAvatarUri()
+    {
+        $filename = static::BLANK_AVATAR_FILENAME;
+        if ($this->getUserAvatarFilename() !== null) {
+            $filename = $this->getUserAvatarFilename();
+        }
+        return static::AVATAR_FILE_PREFIX . $filename;
+    }
+
     public function setUserAvatarFilename($userAvatarFilename)
     {
         $this->userAvatarFilename = $userAvatarFilename;
     }
 
-    /**
-     * @return mixed
-     */
     public function getNote()
     {
         return $this->note;
     }
 
-    /**
-     * @param mixed $note
-     */
     public function setNote($note)
     {
         $this->note = $note;
     }
 
-    /**
-     * @return mixed
-     */
     public function getCreatedAt()
     {
         return $this->createdAt;
     }
 
-    /**
-     * @param mixed $createdAt
-     */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
     }
 
-    /**
-     * @return mixed
-     */
     public function getGenus()
     {
         return $this->genus;
     }
 
-    /**
-     * @param mixed $genus
-     */
     public function setGenus(Genus $genus)
     {
         $this->genus = $genus;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function __toString()
+    {
+        return (string)$this->getNote();
     }
 }

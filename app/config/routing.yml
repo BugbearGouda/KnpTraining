@@ -6,3 +6,10 @@ homepage:
     path: /
     defaults:
         _controller: AppBundle:Main:homepage
+
+
+# app/config/routing.yml
+easy_admin_bundle:
+    resource: "@EasyAdminBundle/Controller/AdminController.php"
+    type:     annotation
+    prefix:   /easyadmin
